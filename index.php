@@ -4,14 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rate an Assignment</title>
+  <link href="css/rating.css" rel="stylesheet" type="text/class">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
+  <script type="text/javascript" src="js/rating.js"></script>
+<script>
   $( function() {
     $( "#accordion" ).accordion();
-  } );
+  });
+</script>
+<!--
+<script language="javascript" type="text/javascript">
+$(function() {
+    $("#rating_star").spaceo_rating_widget({
+	starLength: '5',
+	initialValue: '',
+	callbackFunctionName: 'processRating',
+	imageDirectory: 'img/',
+	inputAttr: 'post_id'
+    });
+  });
+  function processRating(val, attrVal){
+	$.ajax({
+		type: 'POST',
+		url: 'rating.php',
+		data: 'post_id=1&points='+val,
+		dataType: 'json',
+		success: function(data) {
+			if (data.status == 'ok') {
+				alert('You have rated '+val);
+			}else {
+				alert('Please try again in a minute.');
+			}
+		}
+	});
+    }
   </script>
+-->
 </head>
 <body>
 
@@ -76,6 +107,7 @@ $c=$columns->results;
 echo $user_status . "<br /><br />";
 // Use jQuery to load the assignments into their own div block
 echo "<div id='accordion'>";
+$i = 1;
 foreach($c as $row)
 {
 	// We don't want to show Total or Weighted Total because these arent real assignments
@@ -84,8 +116,12 @@ foreach($c as $row)
 		continue;
         } else {
 		echo "<h3>" . $row->name . "</h3>";
-		echo "<div><h4>Assignment ID: " . $row->id . "</h4></div>";
+		echo "<div><p><h4>Assignment ID: " . $row->id . "</h4>";
+		echo "<textarea name='ta" . $i . "' rows='4' cols='50'></textarea>";
+		echo "<input type='submit' name='sub" . $i . "' /></p></div>";
+		//echo "<input name='rating" . $i . "' value='0' id='rating_star' type='hidden' postID='1'/></p></div>";
 	}
+	$i++;
 }
 echo "</div>";
 
