@@ -12,6 +12,21 @@
     $( "#accordion" ).accordion();
   });
 </script>
+<script>
+$(document).ready(function(){
+//  Check Radio-box
+    $(".rating input:radio").attr("checked", false);
+    $('.rating input').click(function () {
+        $(".rating span").removeClass('checked');
+        $(this).parent().addClass('checked');
+    });
+
+    $('input:radio').change(
+    function(){
+        var userRating = this.value;
+    });
+});
+</script>
 </head>
 <body>
 
@@ -86,8 +101,15 @@ foreach($c as $row)
         } else {
 		echo "<h3>" . $row->name . "</h3>";
 		echo "<div><p><h4>Assignment ID: " . $row->id . "</h4>";
+		echo "<form action='' method='POST' name='form_" . $i . "'>";
 		echo "<textarea name='ta" . $i . "' rows='4' cols='50'></textarea>";
-		echo "<input type='submit' name='sub" . $i . "' /></p></div>";
+		echo "<div class='rating'>";
+		echo "<span><input type='radio' name='rating' id='str5' value='5'><label for='str5'></label></span>";
+		echo "<span><input type='radio' name='rating' id='str4' value='4'><label for='str4'></label></span>";
+    		echo "<span><input type='radio' name='rating' id='str3' value='3'><label for='str3'></label></span>";
+    		echo "<span><input type='radio' name='rating' id='str2' value='2'><label for='str2'></label></span>";
+    		echo "<span><input type='radio' name='rating' id='str1' value='1'><label for='str1'></label></span>";
+		echo "<input type='submit' name='sub" . $i . "' /></form></p></div></div>";
 	}
 	$i++;
 }
