@@ -90,10 +90,11 @@ $columns = $rest->readGradebookColumns($access_token, $course_id);
 $c=$columns->results;
 echo $user_status . "<br /><br />";
 // Use jQuery to load the assignments into their own div block
-echo "<div id='accordion'>";
-$i = 1;
-foreach($c as $row)
-{
+if ($user_status == "Student") {
+ echo "<div id='accordion'>";
+ $i = 1;
+ foreach($c as $row)
+ {
 	// We don't want to show Total or Weighted Total because these arent real assignments
         if ($row->name == "Total" || $row->name == "Weighted Total")
         {
@@ -112,9 +113,79 @@ foreach($c as $row)
 		echo "<input type='submit' name='sub" . $i . "' /></form></p></div></div>";
 	}
 	$i++;
-}
-echo "</div>";
+ }
+ echo "</div>";
+} else {
+ echo "<script src='js/Chart.bundle.js'></script>";
+ echo "<script src='js/utils.js'></script>";
 
+ echo "<div id='accordion'>";
+ $i = 1;
+ foreach($c as $row)
+ {
+        // We don't want to show Total or Weighted Total because these arent real assignments
+        if ($row->name == "Total" || $row->name == "Weighted Total")
+        {
+                continue;
+        } else {
+                echo "<h3>" . $row->name . "</h3>";
+                echo "<div><h4>Assignment ID: " . $row->id . "</h4>"; ?>
+        <?PHP echo "<div id='canvas-holder" . $i . "' style='width:18%'>";
+           echo "<canvas id='chart-area" . $i . "'></canvas>"; ?>
+        </div>
+        <script>
+            <?PHP echo "var config" . $i . " = {"; ?>
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: [
+                            1,
+                            2,
+			    3,
+			    4,
+			    5,
+                        ],
+                        backgroundColor: [
+                            window.chartColors.red,
+                            window.chartColors.orange,
+                            window.chartColors.yellow,
+                            window.chartColors.green,
+                            window.chartColors.blue,
+                        ],
+                        label: 'Dataset 1'
+                    }],
+                    labels: [
+                        '1 Star',
+                        '2 Star',
+                        '3 Star',
+                        '4 Star',
+                        '5 Star'
+                    ]
+                },
+                options: {
+                    responsive: true
+                }
+            };
+
+                <?PHP echo "function getChart" . $i . "() {";
+	        echo "var ctx". $i . " = document.getElementById('chart-area" . $i ."').getContext('2d');";
+                echo "var myPie" . $i . " = new Chart(ctx". $i . ", config" . $i . ");}"; ?>
+
+            var colorNames = Object.keys(window.chartColors);
+        </script>
+       <?PHP
+		$i++;
+		echo "</div>";
+	    }
+ }
+ echo "</div>";
+ echo "<script>function start() {";
+ for($x = 1; $x < $i; $x++) {
+   echo "getChart" . $x . "();";
+ }
+ echo "}";
+ echo "window.onload = start();</script>";
+}
 ?>
 </body>
 </html>
